@@ -14,10 +14,13 @@ struct SplashScreenView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("National Park Pal")
+            Text("test edit")
         }
         .padding()
     }
 }
+
+//TEST EDIT
 
 #Preview {
     SplashScreenView()
