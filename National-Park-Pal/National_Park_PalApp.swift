@@ -11,7 +11,7 @@ import SwiftUI
 struct National_Park_PalApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreenView()
         }
     }
 }
