@@ -1,5 +1,5 @@
 //
-//  HomePageVIewq.swift
+//  HomePageView.swift
 //  National-Park-Pal
 //
 //  Created by Kaleb on 3/24/25.

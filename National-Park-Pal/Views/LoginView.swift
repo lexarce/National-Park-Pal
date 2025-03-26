@@ -1,5 +1,5 @@
 //
-//  SplashScreenView.swift
+//  LoginView.swift
 //  National-Park-Pal
 //
 //  Created by Alexis Arce on 3/20/25.
@@ -13,22 +13,73 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showAuthenticationError = false
+    @State private var showPassword = false
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationView {
-            VStack {
-                
-                TextField("Email Address", text: $email)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocapitalization(.none)
-                    .keyboardType(.emailAddress)
-                    .padding()
+        NavigationStack {
+            VStack(spacing: 24) {
+                // Logo
+                Image("logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 160)
+                    .padding(.top, 50)
 
-                SecureField("Password", text: $password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                // Welcome Text
+                VStack(spacing: 6) {
+                    Text("Welcome back")
+                        .font(.title)
+                        .fontWeight(.bold)
+
+                    Text("Log into an existing account")
+                        .foregroundColor(Color(hex: "737373"))
+                        .font(.body)
+                        .fontWeight(.medium)
+                }
+
+                // Email Field
+                VStack(alignment: .leading, spacing: 6) {
+                    TextField("Email", text: $email)
+                        .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(12)
+                }
+                .padding(.horizontal, 30)
+
+                // Password Field with Toggle
+                VStack(alignment: .leading, spacing: 6) {
+                    ZStack {
+                        if showPassword {
+                            TextField("Password", text: $password)
+                                .autocapitalization(.none)
+                        } else {
+                            SecureField("Password", text: $password)
+                                .autocapitalization(.none)
+                        }
+                    }
                     .padding()
-                                
-                Button("Login") {
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                    .overlay(
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                showPassword.toggle()
+                            }) {
+                                Image(systemName: showPassword ? "eye.slash" : "eye")
+                                    .foregroundColor(.gray)
+                                    .padding(.trailing, 12)
+                            }
+                        }
+                    )
+                }
+                .padding(.horizontal, 30)
+
+                //Authenticate user. Navigate to next page
+                Button(action: {
                     userModel.authenticateUser(email: email, password: password) { success in
                         if success {
                             // Navigate to the next view or perform other actions
@@ -36,22 +87,50 @@ struct LoginView: View {
                             showAuthenticationError = true
                         }
                     }
+                }) {
+                    Text("SIGN IN")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: "4C8B2B"))
+                        .foregroundColor(.white)
+                        .cornerRadius(40)
                 }
-                .padding()
-                .alert(isPresented: $showAuthenticationError) {
-                    Alert(title: Text("Login Failed"), message: Text("Invalid email or password."), dismissButton: .default(Text("OK")))
+                .padding(.horizontal, 30)
+
+                // Forgot Password
+                Button(action: {
+                    // Add forgot password logic
+                }) {
+                    Text("FORGOT PASSWORD")
+                        .fontWeight(.bold)
+                        .foregroundColor(Color(hex: "53ADF0"))
                 }
-                
-                NavigationLink(destination: HomePageView(), isActive: $userModel.isAuthenticated) {
-                    EmptyView()
+                .padding(.top, 4)
+
+                Spacer()
+            }
+            .alert(isPresented: $showAuthenticationError) {
+                Alert(title: Text("Login Failed"), message: Text("Invalid email or password."), dismissButton: .default(Text("OK")))
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .foregroundColor(.black)
+                    }
                 }
             }
+            .navigationBarBackButtonHidden(true)
+            .navigationBarTitleDisplayMode(.inline)
         }
-        
     }
-    
 }
 
+// MARK: - Preview
 #Preview {
-    SplashScreenView()
+    LoginView(userModel: UserModel())
 }
+
