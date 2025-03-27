@@ -9,6 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomePageView: View {
+    @ObservedObject var userModel: UserModel
 
     var body: some View {
         NavigationView {
@@ -23,5 +24,6 @@ struct HomePageView: View {
 }
 
 #Preview {
-    HomePageView()
+    HomePageView(userModel: UserModel())
 }
+

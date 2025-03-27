@@ -14,6 +14,8 @@ struct LoginView: View {
     @State private var password = ""
     @State private var showAuthenticationError = false
     @State private var showPassword = false
+    @State private var isLoggedIn = false
+
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -78,11 +80,11 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 30)
 
-                //Authenticate user. Navigate to next page
+                // Sign in button. Authenticate user. Navigate to next page
                 Button(action: {
                     userModel.authenticateUser(email: email, password: password) { success in
                         if success {
-                            // Navigate to the next view or perform other actions
+                            isLoggedIn = true
                         } else {
                             showAuthenticationError = true
                         }
@@ -109,6 +111,11 @@ struct LoginView: View {
                 .padding(.top, 4)
 
                 Spacer()
+                
+                NavigationLink(destination: HomePageView(userModel: userModel), isActive: $isLoggedIn) {
+                    EmptyView()
+                }
+                .hidden()
             }
             .alert(isPresented: $showAuthenticationError) {
                 Alert(title: Text("Login Failed"), message: Text("Invalid email or password."), dismissButton: .default(Text("OK")))
