@@ -16,6 +16,8 @@ struct RegisterView: View {
     @State private var password: String = ""
     @State private var showRegisterFailError = false
     @State private var showError = false
+    @State private var showSuccessAlert = false
+
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -71,7 +73,9 @@ struct RegisterView: View {
                         newUser.password = password
                         
                         userModel.createNewUser(newUser) { success in
-                            if !success {
+                            if success {
+                                showSuccessAlert = true
+                            } else {
                                 showError = true
                             }
                         }
@@ -90,6 +94,15 @@ struct RegisterView: View {
                 Spacer()
             }
             .navigationBarTitleDisplayMode(.inline)
+            .alert(isPresented: $showSuccessAlert) {
+                Alert(
+                    title: Text("Account Created"),
+                    message: Text("Your account was successfully created."),
+                    dismissButton: .default(Text("OK"), action: {
+                        dismiss() // automatically go back after success
+                    })
+                )
+            }
             .alert(isPresented: $showError) {
                 Alert(
                     title: Text("Register Failed"),
