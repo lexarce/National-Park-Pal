@@ -1,22 +1,21 @@
 //
-//  HomePageView.swift
+//  UserParksView.swift
 //  National-Park-Pal
 //
-//  Created by Kaleb on 3/24/25.
+//  Created by Kaleb on 3/28/25.
 //
 
 import SwiftUI
 import FirebaseAuth
 
-struct HomePageView: View {
+struct UserParksView: View {
     @ObservedObject var userModel: UserModel
-    @StateObject private var parkModel = ParkModel()
 
     var body: some View {
         NavigationView {
             VStack {
 
-                Text("Home Page")
+                Text("Saved Parks View")
                 
             }
         }
@@ -25,6 +24,5 @@ struct HomePageView: View {
 }
 
 #Preview {
-    HomePageView(userModel: UserModel())
+    UserParksView(userModel: UserModel())
 }
-

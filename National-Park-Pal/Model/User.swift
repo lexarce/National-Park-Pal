@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import UIKit
+import SwiftUI
+
 class User: Identifiable
 {
     var id: String
