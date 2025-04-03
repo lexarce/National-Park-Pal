@@ -81,8 +81,6 @@ struct SplashScreenView: View {
                     Spacer()
                 }
             }
-            .navigationBarHidden(true)
-            .navigationBarBackButtonHidden(true)
             .onAppear {
                 animate = true
             }

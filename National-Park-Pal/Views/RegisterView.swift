@@ -15,8 +15,8 @@ struct RegisterView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var showRegisterFailError = false
-    @State private var showError = false
-    @State private var showSuccessAlert = false
+    @State private var alertMessage: String = ""
+    @State private var showAlert: Bool = false
 
     @Environment(\.dismiss) var dismiss
 
@@ -65,7 +65,8 @@ struct RegisterView: View {
                 //Authenticate user. Navigate to next page
                 Button(action: {
                     if name == "" || email == "" || password == "" {
-                        showError = true
+                        alertMessage = "Please fill out all fields."
+                        showAlert = true
                     } else {
                         let newUser = User()
                         newUser.name = name
@@ -73,10 +74,16 @@ struct RegisterView: View {
                         newUser.password = password
                         
                         userModel.createNewUser(newUser) { success in
-                            if success {
-                                showSuccessAlert = true
-                            } else {
-                                showError = true
+                            DispatchQueue.main.async {
+                                if success {
+                                    print("Account creation successful")
+                                    alertMessage = "Your account was successfully created."
+                                    showAlert = true
+                                } else {
+                                    print("Account creation failed")
+                                    alertMessage = "Ensure email is not associated with an account already."
+                                    showAlert = true
+                                }
                             }
                         }
                     }
@@ -94,20 +101,15 @@ struct RegisterView: View {
                 Spacer()
             }
             .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $showSuccessAlert) {
+            .alert(isPresented: $showAlert) {
                 Alert(
-                    title: Text("Account Created"),
-                    message: Text("Your account was successfully created."),
-                    dismissButton: .default(Text("OK"), action: {
-                        dismiss() // automatically go back after success
-                    })
-                )
-            }
-            .alert(isPresented: $showError) {
-                Alert(
-                    title: Text("Register Failed"),
-                    message: Text("Please fill out all fields. Ensure email is not associated with an account already."),
-                    dismissButton: .default(Text("OK"))
+                    title: Text("Notification"),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("OK")) {
+                        if alertMessage.contains("successfully") {
+                            dismiss() // Dismiss after success
+                        }
+                    }
                 )
             }
             .toolbar {
@@ -120,7 +122,6 @@ struct RegisterView: View {
                     }
                 }
             }
-            .navigationBarBackButtonHidden(true)
         }
     }
 }

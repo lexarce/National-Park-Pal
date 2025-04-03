@@ -15,6 +15,7 @@ class User: Identifiable
     var name:String?
     var email:String?
     var password:String?
+    var savedParks: [Park]
     
     //Initial
     init() {
@@ -22,6 +23,7 @@ class User: Identifiable
         self.name = ""
         self.email = ""
         self.password = ""
+        self.savedParks = []
     }
     
     //Firestore parsing
@@ -30,5 +32,8 @@ class User: Identifiable
         self.name = data["name"] as? String
         self.email = data["email"] as? String
         self.password = data["password"] as? String
+        self.savedParks = data["savedParks"] as? [Park] ?? []
     }
 }
+
+

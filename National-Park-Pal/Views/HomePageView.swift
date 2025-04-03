@@ -13,10 +13,30 @@ struct HomePageView: View {
     @StateObject private var parkModel = ParkModel()
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
 
-                Text("Home Page")
+                NavigationLink(destination: UserParksView(userModel: userModel)) {
+                    Text("View Saved Parks")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: "494356"))
+                        .cornerRadius(40)
+                        .padding(.horizontal, 40)
+                }
+                    
+                NavigationLink(destination: SearchParksView(parkModel: parkModel, userModel: userModel)) {
+                    Text("Explore Parks")
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(hex: "494356"))
+                        .cornerRadius(40)
+                        .padding(.horizontal, 40)
+                }
                 
             }
         }

@@ -130,7 +130,6 @@ struct LoginView: View {
                     }
                 }
             }
-            .navigationBarBackButtonHidden(true)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
