@@ -9,24 +9,47 @@ import SwiftUI
 
 struct MapView: View {
     @ObservedObject var userModel: UserModel
+    @EnvironmentObject var tabModel: TabSelectionModel
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        VStack {
-            Text("Map View")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            Spacer()
-            Text("Map functionality coming soon!")
-                .foregroundColor(.gray)
-            Spacer()
+        NavigationStack {
+            VStack {
+                Text("Map View")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+
+                Spacer()
+
+                Text("Map functionality coming soon!")
+                    .foregroundColor(.gray)
+
+                Spacer()
+
+                CustomTabBarView(userModel: userModel)
+            }
+            .padding()
+            .onAppear {
+                tabModel.selectedTab = 1
+            }
+            .navigationTitle("Park Map")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .foregroundColor(.black)
+                    }
+                }
+            }
         }
-        .padding()
-        .navigationTitle("Park Map")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
     MapView(userModel: UserModel())
+        .environmentObject(TabSelectionModel())
 }
-

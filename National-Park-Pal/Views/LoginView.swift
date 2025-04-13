@@ -15,6 +15,8 @@ struct LoginView: View {
     @State private var showAuthenticationError = false
     @State private var showPassword = false
     @State private var isLoggedIn = false
+    @EnvironmentObject var tabModel: TabSelectionModel
+
 
     @Environment(\.dismiss) var dismiss
 
@@ -112,7 +114,8 @@ struct LoginView: View {
 
                 Spacer()
                 
-                NavigationLink(destination: HomePageView(userModel: userModel), isActive: $isLoggedIn) {
+                NavigationLink(destination: HomePageView(userModel: userModel)
+                    .environmentObject(tabModel), isActive: $isLoggedIn) {
                     EmptyView()
                 }
                 .hidden()
@@ -139,5 +142,6 @@ struct LoginView: View {
 // MARK: - Preview
 #Preview {
     LoginView(userModel: UserModel())
+        .environmentObject(TabSelectionModel())
 }
 

@@ -17,6 +17,8 @@ struct RegisterView: View {
     @State private var showRegisterFailError = false
     @State private var alertMessage: String = ""
     @State private var showAlert: Bool = false
+    @EnvironmentObject var tabModel: TabSelectionModel
+
 
     @Environment(\.dismiss) var dismiss
 
@@ -77,7 +79,7 @@ struct RegisterView: View {
                             DispatchQueue.main.async {
                                 if success {
                                     print("Account creation successful")
-                                    alertMessage = "Your account was successfully created."
+                                    alertMessage = "Account successfully created! Please log in to continue."
                                     showAlert = true
                                 } else {
                                     print("Account creation failed")

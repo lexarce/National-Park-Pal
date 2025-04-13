@@ -11,6 +11,7 @@ import FirebaseAuth
 
 struct SplashScreenView: View {
     @StateObject private var userModel = UserModel()
+    @StateObject private var tabModel = TabSelectionModel()
     
     // Animation state variables
     @State private var animate = false

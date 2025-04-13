@@ -11,36 +11,35 @@ import FirebaseAuth
 
 struct HomePageView: View {
     @ObservedObject var userModel: UserModel
-    @StateObject private var parkModel = ParkModel()
+    @ObservedObject var parkModel: ParkModel = ParkModel()
+    @EnvironmentObject var tabModel: TabSelectionModel
     
     @State private var searchText = ""
-    @State private var selectedTab = 2
-    // 0: UserParksView, 1: MapView, 2: HomePageView
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 // Welcome message
-                Text("Welcome \(userModel.user.name ?? "User")!")
+                let firstName = userModel.user.name?.components(separatedBy: " ").first ?? "User"
+                Text("Welcome \(firstName)!")
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.top, 60)
-                
-                // Trees
+
+                // Trees image
                 ZStack(alignment: .bottom) {
                     Image("trees")
                         .resizable()
                         .scaledToFit()
                         .frame(height: 160)
                 }
-                
-                Spacer()
-                    .frame(height: 16)
 
-                // PARK LOCATOR Box
+                Spacer().frame(height: 16)
+
+                // PARK LOCATOR box
                 VStack(spacing: 20) {
-                    Spacer()
-                        .frame(height: 5)
+                    Spacer().frame(height: 5)
+
                     Text("PARK LOCATOR")
                         .font(.title3)
                         .fontWeight(.bold)
@@ -70,13 +69,12 @@ struct HomePageView: View {
                 .background(Color(hex: "64411F"))
                 .cornerRadius(20)
                 .padding(.horizontal)
-                .padding(.top, -60) // Lift onto trees a bit
+                .padding(.top, -60) // overlap trees
                 .shadow(radius: 4)
 
-                // Spacer between Park Locator and View Favorites
                 Spacer().frame(height: 30)
 
-                // View Favorites button
+                // VIEW FAVORITES button
                 NavigationLink(destination: UserParksView(userModel: userModel)) {
                     VStack {
                         Image(systemName: "heart")
@@ -93,10 +91,9 @@ struct HomePageView: View {
                 .padding(.horizontal, 16)
                 .shadow(radius: 4)
 
-                // Spacer between View Favorites and Explore Parks
                 Spacer().frame(height: 25)
 
-                // Explore Parks image button
+                // EXPLORE PARKS image button
                 NavigationLink(destination: SearchParksView(parkModel: parkModel, userModel: userModel)) {
                     Image("exploreparksbutton")
                         .resizable()
@@ -108,54 +105,20 @@ struct HomePageView: View {
 
                 Spacer()
 
-                // Bottom Toolbar
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        selectedTab = 0
-                    }) {
-                        Image(systemName: selectedTab == 0 ? "bookmark.fill" : "bookmark")
-                            .font(.title2)
-                            .foregroundColor(.black)
-                    }
-                    .background(
-                        NavigationLink("", destination: UserParksView(userModel: userModel))
-                            .opacity(0)
-                    )
-
-                    Spacer()
-                    Button(action: {
-                        selectedTab = 1
-                    }) {
-                        Image(systemName: selectedTab == 1 ? "map.fill" : "map")
-                            .font(.title2)
-                            .foregroundColor(.black)
-                    }
-                    .background(
-                        NavigationLink("", destination: MapView(userModel: userModel))
-                            .opacity(0)
-                    )
-
-                    Spacer()
-                    Button(action: {
-                        selectedTab = 2
-                    }) {
-                        Image(systemName: selectedTab == 2 ? "house.fill" : "house")
-                            .font(.title2)
-                            .foregroundColor(.black)
-                    }
-                    .disabled(true)
-                    Spacer()
-                }
-                .padding(.top, 12)
-                .padding(.bottom, 24) // Push toolbar flush to bottom
-                .background(Color.white.ignoresSafeArea(edges: .bottom).shadow(radius: 5))
+                // Bottom toolbar
+                CustomTabBarView(userModel: userModel)
+            }
+            .onAppear {
+                tabModel.selectedTab = 2 // Highlight home tab
             }
         }
         .navigationBarBackButtonHidden(true)
     }
 }
 
+// MARK: - Preview
 #Preview {
     HomePageView(userModel: UserModel())
+        .environmentObject(TabSelectionModel())
 }
+
