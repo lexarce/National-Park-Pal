@@ -10,13 +10,13 @@ import FirebaseAuth
 
 struct LoginView: View {
     @ObservedObject var userModel: UserModel
+    @EnvironmentObject var tabModel: TabSelectionModel
+
     @State private var email = ""
     @State private var password = ""
     @State private var showAuthenticationError = false
     @State private var showPassword = false
     @State private var isLoggedIn = false
-    @EnvironmentObject var tabModel: TabSelectionModel
-
 
     @Environment(\.dismiss) var dismiss
 
@@ -82,7 +82,7 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 30)
 
-                // Sign in button. Authenticate user. Navigate to next page
+                // Sign in button
                 Button(action: {
                     userModel.authenticateUser(email: email, password: password) { success in
                         if success {
@@ -104,7 +104,7 @@ struct LoginView: View {
 
                 // Forgot Password
                 Button(action: {
-                    // Add forgot password logic
+                    // TODO: Add forgot password logic
                 }) {
                     Text("FORGOT PASSWORD")
                         .fontWeight(.bold)
@@ -113,15 +113,15 @@ struct LoginView: View {
                 .padding(.top, 4)
 
                 Spacer()
-                
-                NavigationLink(destination: HomePageView(userModel: userModel)
-                    .environmentObject(tabModel), isActive: $isLoggedIn) {
-                    EmptyView()
-                }
-                .hidden()
             }
             .alert(isPresented: $showAuthenticationError) {
-                Alert(title: Text("Login Failed"), message: Text("Invalid email or password."), dismissButton: .default(Text("OK")))
+                Alert(title: Text("Login Failed"),
+                      message: Text("Invalid email or password."),
+                      dismissButton: .default(Text("OK")))
+            }
+            .fullScreenCover(isPresented: $isLoggedIn) {
+                HomePageView(userModel: userModel)
+                    .environmentObject(tabModel)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -144,4 +144,3 @@ struct LoginView: View {
     LoginView(userModel: UserModel())
         .environmentObject(TabSelectionModel())
 }
-

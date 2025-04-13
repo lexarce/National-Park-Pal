@@ -13,18 +13,17 @@ struct SplashScreenView: View {
     @StateObject private var userModel = UserModel()
     @StateObject private var tabModel = TabSelectionModel()
     
-    // Animation state variables
+    // animation state variable
     @State private var animate = false
 
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "8AC63C")
-                    .ignoresSafeArea()
+                Color(hex: "8AC63C").ignoresSafeArea()
                 
                 VStack(spacing: 30) {
                     Spacer()
-                    
+
                     VStack(spacing: 16) {
                         Text("Welcome to")
                             .font(.title2)
@@ -52,8 +51,8 @@ struct SplashScreenView: View {
                             .animation(.easeOut(duration: 1).delay(0.6), value: animate)
                     }
 
-                    // Navigation buttons
-                    NavigationLink(destination: RegisterView(userModel: userModel)) {
+                    NavigationLink(destination: RegisterView(userModel: userModel)
+                        .environmentObject(tabModel)) {
                         Text("REGISTER")
                             .fontWeight(.bold)
                             .foregroundColor(.black)
@@ -66,7 +65,8 @@ struct SplashScreenView: View {
                     .opacity(animate ? 1 : 0)
                     .animation(.easeOut(duration: 0.8).delay(1), value: animate)
 
-                    NavigationLink(destination: LoginView(userModel: userModel)) {
+                    NavigationLink(destination: LoginView(userModel: userModel)
+                        .environmentObject(tabModel)) {
                         Text("I ALREADY HAVE AN ACCOUNT")
                             .fontWeight(.bold)
                             .foregroundColor(.white)
@@ -89,8 +89,8 @@ struct SplashScreenView: View {
     }
 }
 
-// MARK: - Preview
 #Preview {
     SplashScreenView()
 }
+
 

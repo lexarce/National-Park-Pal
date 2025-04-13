@@ -10,29 +10,25 @@ import FirebaseAuth
 
 struct RegisterView: View {
     @ObservedObject var userModel: UserModel
-    
+    @EnvironmentObject var tabModel: TabSelectionModel
+
     @State private var name: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var showRegisterFailError = false
+    @State private var showAlert = false
     @State private var alertMessage: String = ""
-    @State private var showAlert: Bool = false
-    @EnvironmentObject var tabModel: TabSelectionModel
-
 
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                // Logo and Titles
                 VStack(spacing: 12) {
                     Text("NATIONAL PARK PAL")
                         .font(.title)
                         .fontWeight(.bold)
-                        .padding(.bottom, 10)
                         .padding(.top)
-                    
+
                     Image("logo")
                         .resizable()
                         .scaledToFit()
@@ -42,31 +38,25 @@ struct RegisterView: View {
                         Text("Sign up with")
                             .font(.title)
                             .fontWeight(.semibold)
-
                         Text("email")
                             .font(.title)
                             .fontWeight(.semibold)
-
                         Text("Create account")
                             .foregroundColor(Color(hex: "666666"))
                             .font(.body)
                             .fontWeight(.bold)
                     }
                 }
-                .padding(.top)
 
-                // Input fields
                 VStack(spacing: 20) {
                     CustomTextField(title: "Name", text: $name)
                     CustomTextField(title: "Email", text: $email)
                     CustomTextField(title: "Password", text: $password, isSecure: true)
                 }
                 .padding(.horizontal, 40)
-                .padding(.bottom, 20)
-                
-                //Authenticate user. Navigate to next page
+
                 Button(action: {
-                    if name == "" || email == "" || password == "" {
+                    if name.isEmpty || email.isEmpty || password.isEmpty {
                         alertMessage = "Please fill out all fields."
                         showAlert = true
                     } else {
@@ -74,16 +64,14 @@ struct RegisterView: View {
                         newUser.name = name
                         newUser.email = email
                         newUser.password = password
-                        
+
                         userModel.createNewUser(newUser) { success in
                             DispatchQueue.main.async {
                                 if success {
-                                    print("Account creation successful")
-                                    alertMessage = "Account successfully created! Please log in to continue."
+                                    alertMessage = "Account created! Please log in to continue."
                                     showAlert = true
                                 } else {
-                                    print("Account creation failed")
-                                    alertMessage = "Ensure email is not associated with an account already."
+                                    alertMessage = "Email may already be in use. Try a different one."
                                     showAlert = true
                                 }
                             }
@@ -94,7 +82,7 @@ struct RegisterView: View {
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color(hex: "4C8B2B")) // darker green
+                        .background(Color(hex: "4C8B2B"))
                         .foregroundColor(.white)
                         .cornerRadius(40)
                 }
@@ -102,14 +90,13 @@ struct RegisterView: View {
 
                 Spacer()
             }
-            .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $showAlert) {
                 Alert(
                     title: Text("Notification"),
                     message: Text(alertMessage),
                     dismissButton: .default(Text("OK")) {
-                        if alertMessage.contains("successfully") {
-                            dismiss() // Dismiss after success
+                        if alertMessage.contains("created") {
+                            dismiss()
                         }
                     }
                 )
@@ -124,16 +111,19 @@ struct RegisterView: View {
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
         }
     }
 }
 
-// MARK: - Custom Text Field
+// MARK: - Custom text field
+
 struct CustomTextField: View {
     var title: String
     @Binding var text: String
     var isSecure: Bool = false
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
@@ -156,5 +146,5 @@ struct CustomTextField: View {
 // MARK: - Preview
 #Preview {
     RegisterView(userModel: UserModel())
+        .environmentObject(TabSelectionModel())
 }
-
