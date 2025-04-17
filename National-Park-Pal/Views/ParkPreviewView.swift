@@ -5,6 +5,8 @@
 //  Created by Alexis Arce on 4/16/25.
 //
 
+// This is for showing a preview card with a description of the park in MapView before directly going to the directions (not currently implemented)
+
 import SwiftUI
 
 struct ParkPreviewView: View {
@@ -50,13 +52,11 @@ struct ParkPreviewView: View {
             description: "Zion is Utah’s first national park, known for its massive sandstone cliffs.",
             latitude: "37.2982",
             longitude: "-113.0263",
-            activities: [Activity(name: "Hiking"), Activity(name: "Camping")],
+            activities: [Activity(name: "Hiking")],
             addresses: [],
-            images: [ParkImage(title: "Zion Canyon", url: "https://www.nps.gov/common/uploads/structured_data/3C7D7357-1DD8-B71B-0B9BE52C052C88AA.jpg")]
+            images: []
         ),
-        onDirectionsTapped: {
-            print("Directions button tapped")
-        }
+        onDirectionsTapped: { print("Directions tapped") }
     )
     .previewLayout(.sizeThatFits)
     .padding()

@@ -12,6 +12,7 @@ struct MapView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var parkModel = ParkModel()
     @State private var allParks: [Park] = []
+    @State private var selectedPark: Park? = nil
 
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 39.5, longitude: -98.35), // Start at the center of U.S.
