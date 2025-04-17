@@ -13,7 +13,8 @@ struct NPSResponse: Codable {
     let data: [Park]?
 }
 
-struct Park: Codable {
+struct Park: Codable, Identifiable {
+    var id: String { url ?? UUID().uuidString }
     let url: String?
     let fullName: String?
     let description: String?

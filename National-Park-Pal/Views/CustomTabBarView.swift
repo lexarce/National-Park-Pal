@@ -26,7 +26,7 @@ struct CustomTabBarView: View {
 
             Spacer()
 
-            NavigationLink(destination: MapView(userModel: userModel).environmentObject(tabModel)) {
+            NavigationLink(destination: MapView().environmentObject(tabModel)) {
                 Image(systemName: tabModel.selectedTab == 1 ? "map.fill" : "map")
                     .font(.title2)
                     .foregroundColor(.black)
