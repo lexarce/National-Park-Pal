@@ -5,8 +5,9 @@
 //  Created by Alexis Arce on 4/16/25.
 //
 
-// This is for showing a preview card with a description of the park in MapView before directly going to the directions (not currently implemented)
+/* This is for showing a preview card with a description of the park in MapView before directly going to the directions (not currently implemented)*/
 
+/*
 import SwiftUI
 
 struct ParkPreviewView: View {
@@ -61,4 +62,4 @@ struct ParkPreviewView: View {
     .previewLayout(.sizeThatFits)
     .padding()
 }
-
+*/

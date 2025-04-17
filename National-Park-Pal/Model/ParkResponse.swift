@@ -23,6 +23,9 @@ struct Park: Codable, Identifiable {
     let activities: [Activity]?
     let addresses: [Address]?
     let images: [ParkImage]?
+    
+    let designation: String?
+    let states: String?
 }
 
 struct Activity: Codable {

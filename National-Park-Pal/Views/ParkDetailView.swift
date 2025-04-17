@@ -46,6 +46,9 @@ struct ParkDetailView: View {
             line1: "123 Sample Street",
             stateCode: "AZ"
         )],
-        images: [ParkImage(title: "Sample Image", url: "defaultPark")] // Placeholder image
+        images: [ParkImage(title: "Sample Image", url: "defaultPark")], // Placeholder image
+        
+        designation: "National Park",
+                states: "AZ"
     ))
 }
