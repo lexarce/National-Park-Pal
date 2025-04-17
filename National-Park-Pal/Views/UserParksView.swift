@@ -13,20 +13,20 @@ struct UserParksView: View {
     @ObservedObject var userModel: UserModel
     @EnvironmentObject var tabModel: TabSelectionModel
     @Environment(\.dismiss) var dismiss
+
     @State private var isDeleting = false
-    
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Top banner with tree image and title
+                // Tree banner with title
                 ZStack(alignment: .bottom) {
                     Image("trees")
                         .resizable()
                         .scaledToFill()
                         .frame(height: 160)
                         .clipped()
-                    
+
                     Text("FAVORITE PARKS")
                         .font(.title)
                         .fontWeight(.bold)
@@ -34,47 +34,62 @@ struct UserParksView: View {
                         .shadow(radius: 2)
                         .padding(.bottom, 8)
                 }
-                
-                // Parks List
+
+                // List of saved parks
                 List {
                     ForEach(userModel.user.savedParks, id: \.fullName) { park in
-                        NavigationLink(destination: ParkDetailView(userModel: userModel, park: park)) {
-                            HStack(spacing: 12) {
-                                if let imageUrl = park.images?.first?.url,
-                                   let url = URL(string: imageUrl) {
-                                    AsyncImage(url: url) { image in
-                                        image.resizable()
-                                            .scaledToFill()
-                                            .frame(width: 50, height: 50)
-                                            .cornerRadius(8)
-                                            .clipped()
-                                    } placeholder: {
-                                        Rectangle()
-                                            .fill(Color.gray.opacity(0.3))
-                                            .frame(width: 50, height: 50)
-                                            .cornerRadius(8)
+                        HStack {
+                            NavigationLink(destination: ParkDetailView(userModel: userModel, park: park)) {
+                                HStack(spacing: 12) {
+                                    // Image thumbnail
+                                    if let imageUrl = park.images?.first?.url,
+                                       let url = URL(string: imageUrl) {
+                                        AsyncImage(url: url) { image in
+                                            image.resizable()
+                                                .scaledToFill()
+                                                .frame(width: 50, height: 50)
+                                                .cornerRadius(8)
+                                                .clipped()
+                                        } placeholder: {
+                                            Rectangle()
+                                                .fill(Color.gray.opacity(0.3))
+                                                .frame(width: 50, height: 50)
+                                                .cornerRadius(8)
+                                        }
+                                    }
+
+                                    // Park info
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(park.fullName ?? "")
+                                            .font(.headline)
+
+                                        Text(park.designationAndState)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
                                     }
                                 }
+                            }
 
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(park.fullName ?? "")
-                                        .font(.headline)
-                                        .foregroundColor(.primary)
-                                    
-                                    Text(park.designationAndState) // Helper below
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                            // Trash button if delete mode is active
+                            if isDeleting {
+                                Spacer()
+                                Button(action: {
+                                    if let index = userModel.user.savedParks.firstIndex(where: { $0.fullName == park.fullName }) {
+                                        userModel.removeParkLocally(at: IndexSet(integer: index))
+                                    }
+                                }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
                                 }
                             }
-                            .padding(.vertical, 4)
                         }
+                        .padding(.vertical, 4)
                     }
-                    .onDelete(perform: userModel.removeParkLocally)
                 }
                 .listStyle(.plain)
-                
+
                 Spacer(minLength: 0)
-                
+
                 // Bottom tab bar
                 CustomTabBarView(userModel: userModel)
             }
@@ -94,23 +109,21 @@ struct UserParksView: View {
                     }
                 }
 
-                // Delete icon
+                // Delete toggle icon
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                        .labelStyle(IconOnlyLabelStyle())
-                        .foregroundColor(.red)
-                        .imageScale(.large)
-                        .overlay(
-                            Image(systemName: "minus.circle")
-                                .foregroundColor(.red)
-                        )
+                    Button(action: {
+                        isDeleting.toggle()
+                    }) {
+                        Image(systemName: isDeleting ? "xmark.circle.fill" : "minus.circle")
+                            .foregroundColor(.red)
+                    }
                 }
             }
         }
     }
 }
 
-// Helper to format designation and state
+// MARK: - Park display helper
 extension Park {
     var designationAndState: String {
         let designation = self.designation ?? "National Park"
