@@ -3,7 +3,7 @@
 //  National-Park-Pal
 //
 //  Created by Kaleb on 3/28/25.
-//  Mo
+//  Modified by Alexis on 4/17/25.
 //
 
 import SwiftUI

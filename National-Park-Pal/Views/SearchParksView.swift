@@ -18,7 +18,22 @@ struct SearchParksView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
+                // Tree banner with title
+                ZStack(alignment: .bottom) {
+                    Image("trees")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 160)
+                        .clipped()
+                    
+                    Text("EXPLORE PARKS BY STATE")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .shadow(radius: 2)
+                        .padding(.bottom, 8)
+                }
                 Text("Selected State: \(selectedState)")
                     .font(.headline)
                     .padding()
@@ -34,7 +49,8 @@ struct SearchParksView: View {
                 } label: {
                     Label("Select State", systemImage: "chevron.down")
                         .padding()
-                        .background(Color.blue.opacity(0.4))
+                        .foregroundColor(Color.black)
+                        .background(Color(hex: "37542E")).opacity(0.5)
                         .cornerRadius(8)
                 }
                 
@@ -43,8 +59,9 @@ struct SearchParksView: View {
                 }) {
                     Text("Fetch Parks in \(selectedState)")
                         .foregroundColor(.white)
+                        .fontWeight(.bold)
                         .padding()
-                        .background(Color.blue)
+                        .background(Color(hex: "37542E"))
                         .cornerRadius(10)
                 }
                 .padding()
