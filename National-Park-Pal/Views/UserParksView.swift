@@ -19,7 +19,7 @@ struct UserParksView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Tree banner with title
+                // Banner
                 ZStack(alignment: .bottom) {
                     Image("trees")
                         .resizable()
@@ -38,31 +38,30 @@ struct UserParksView: View {
                 // List of saved parks
                 List {
                     ForEach(userModel.user.savedParks, id: \.fullName) { park in
-                        HStack {
-                            NavigationLink(destination: ParkDetailView(userModel: userModel, park: park)) {
-                                HStack(spacing: 12) {
-                                    // Image thumbnail
-                                    if let imageUrl = park.images?.first?.url,
-                                       let url = URL(string: imageUrl) {
-                                        AsyncImage(url: url) { image in
-                                            image.resizable()
-                                                .scaledToFill()
-                                                .frame(width: 50, height: 50)
-                                                .cornerRadius(8)
-                                                .clipped()
-                                        } placeholder: {
-                                            Rectangle()
-                                                .fill(Color.gray.opacity(0.3))
-                                                .frame(width: 50, height: 50)
-                                                .cornerRadius(8)
-                                        }
-                                    }
+                        HStack(spacing: 12) {
+                            // Thumbnail
+                            if let imageUrl = park.images?.first?.url,
+                               let url = URL(string: imageUrl) {
+                                AsyncImage(url: url) { image in
+                                    image.resizable()
+                                        .scaledToFill()
+                                        .frame(width: 50, height: 50)
+                                        .cornerRadius(8)
+                                        .clipped()
+                                } placeholder: {
+                                    Rectangle()
+                                        .fill(Color.gray.opacity(0.3))
+                                        .frame(width: 50, height: 50)
+                                        .cornerRadius(8)
+                                }
+                            }
 
-                                    // Park info
-                                    VStack(alignment: .leading, spacing: 4) {
+                            // Text info and nav link
+                            VStack(alignment: .leading, spacing: 4) {
+                                NavigationLink(destination: ParkDetailView(userModel: userModel, park: park)) {
+                                    VStack(alignment: .leading) {
                                         Text(park.fullName ?? "")
                                             .font(.headline)
-
                                         Text(park.designationAndState)
                                             .font(.subheadline)
                                             .foregroundColor(.secondary)
@@ -70,17 +69,17 @@ struct UserParksView: View {
                                 }
                             }
 
-                            // Trash button if delete mode is active
+                            Spacer()
+
+                            // Delete icon (always visible if isDeleting is true)
                             if isDeleting {
-                                Spacer()
                                 Button(action: {
-                                    if let index = userModel.user.savedParks.firstIndex(where: { $0.fullName == park.fullName }) {
-                                        userModel.removeParkLocally(at: IndexSet(integer: index))
-                                    }
+                                    userModel.removeParkFromFirebase(park)
                                 }) {
                                     Image(systemName: "trash")
                                         .foregroundColor(.red)
                                 }
+                                .buttonStyle(BorderlessButtonStyle()) // <- super important in a List row
                             }
                         }
                         .padding(.vertical, 4)
@@ -88,9 +87,7 @@ struct UserParksView: View {
                 }
                 .listStyle(.plain)
 
-                Spacer(minLength: 0)
-
-                // Bottom tab bar
+                // Bottom Tab Bar
                 CustomTabBarView(userModel: userModel)
             }
             .onAppear {
@@ -99,7 +96,6 @@ struct UserParksView: View {
             }
             .navigationBarBackButtonHidden(true)
             .toolbar {
-                // Back button
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
                         dismiss()
@@ -109,12 +105,11 @@ struct UserParksView: View {
                     }
                 }
 
-                // Delete toggle icon
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isDeleting.toggle()
                     }) {
-                        Image(systemName: isDeleting ? "xmark.circle.fill" : "minus.circle")
+                        Image(systemName: isDeleting ? "xmark.circle.fill" : "trash.circle")
                             .foregroundColor(.red)
                     }
                 }
@@ -123,7 +118,7 @@ struct UserParksView: View {
     }
 }
 
-// MARK: - Park display helper
+// MARK: - Helper
 extension Park {
     var designationAndState: String {
         let designation = self.designation ?? "National Park"

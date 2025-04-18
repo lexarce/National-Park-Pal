@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  ParkDetailView.swift
 //  National-Park-Pal
 //
 //  Created by Kaleb on 3/28/25.
@@ -13,13 +13,17 @@ struct ParkDetailView: View {
     let park: Park
     @Environment(\.dismiss) var dismiss
 
-    // Fixed ASU Tempe location
+    @State private var isSaved = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+
+    // ASU Tempe location
     let asuLocation = CLLocationCoordinate2D(latitude: 33.4213174, longitude: -111.933163054132)
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Park banner image with title
+                // Banner image
                 ZStack(alignment: .bottomLeading) {
                     if let imageUrl = park.images?.first?.url,
                        let url = URL(string: imageUrl) {
@@ -50,7 +54,7 @@ struct ParkDetailView: View {
                     .shadow(radius: 4)
                 }
 
-                // Park description
+                // Description
                 Text(park.description ?? "")
                     .font(.body)
                     .padding()
@@ -58,7 +62,7 @@ struct ParkDetailView: View {
 
                 Spacer().frame(height: 16)
 
-                // Action buttons
+                // Buttons
                 VStack(spacing: 16) {
                     HStack(spacing: 20) {
                         NavigationLink(destination: ActivitiesView(park: park)) {
@@ -78,33 +82,47 @@ struct ParkDetailView: View {
 
                 Spacer()
 
-                // Custom bottom tab bar
                 CustomTabBarView(userModel: userModel)
             }
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
+                    Button { dismiss() } label: {
                         Image(systemName: "chevron.backward")
                             .foregroundColor(.black)
                     }
                 }
 
-                // Button to save park
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        userModel.savePark(park)
-                    }) {
-                        Image(systemName: "square.and.arrow.down")
+                    Button(action: toggleSaveStatus) {
+                        Image(systemName: isSaved ? "heart.fill" : "heart")
+                            .foregroundColor(.red)
                     }
                 }
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertMessage))
+            }
+            .onAppear {
+                // Real-time sync: update UI from latest userModel
+                isSaved = userModel.user.savedParks.contains(where: { $0.fullName == park.fullName })
             }
         }
     }
 
-    // Open Apple Maps from ASU to park
+    func toggleSaveStatus() {
+        if isSaved {
+            userModel.removeParkFromFirebase(park)
+            alertMessage = "Park removed from favorites!"
+        } else {
+            userModel.savePark(park)
+            alertMessage = "Park saved successfully!"
+        }
+
+        isSaved.toggle()
+        showAlert = true
+    }
+
     func openMaps() {
         guard let lat = Double(park.latitude ?? ""),
               let lon = Double(park.longitude ?? "") else { return }
