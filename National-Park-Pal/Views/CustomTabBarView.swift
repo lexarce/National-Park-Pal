@@ -55,6 +55,7 @@ struct CustomTabBarView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     CustomTabBarView(userModel: UserModel())
         .environmentObject(TabSelectionModel())

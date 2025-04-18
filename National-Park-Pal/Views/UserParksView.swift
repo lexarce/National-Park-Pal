@@ -79,7 +79,7 @@ struct UserParksView: View {
                                     Image(systemName: "trash")
                                         .foregroundColor(.red)
                                 }
-                                .buttonStyle(BorderlessButtonStyle()) // <- super important in a List row
+                                .buttonStyle(BorderlessButtonStyle())
                             }
                         }
                         .padding(.vertical, 4)

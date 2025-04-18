@@ -106,6 +106,7 @@ struct ActivitiesView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     ActivitiesView(park: Park(
         url: "https://www.nps.gov/zion",

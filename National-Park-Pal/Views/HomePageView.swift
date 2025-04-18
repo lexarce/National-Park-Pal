@@ -109,7 +109,7 @@ struct HomePageView: View {
                 CustomTabBarView(userModel: userModel)
             }
             .onAppear {
-                tabModel.selectedTab = 2 // Highlight home tab
+                tabModel.selectedTab = 2
             }
         }
         .navigationBarBackButtonHidden(true)

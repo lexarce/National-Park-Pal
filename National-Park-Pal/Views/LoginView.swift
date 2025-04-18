@@ -53,7 +53,7 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 30)
 
-                // Password Field with Toggle
+                // Password field with toggle
                 VStack(alignment: .leading, spacing: 6) {
                     ZStack {
                         if showPassword {
@@ -102,7 +102,7 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 30)
 
-                // Forgot Password
+                // Forgot password
                 Button(action: {
                     // TODO: Add forgot password logic
                 }) {

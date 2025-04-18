@@ -145,6 +145,7 @@ struct MappedPark: Identifiable {
     let coordinate: CLLocationCoordinate2D
 }
 
+// MARK: - Preview
 #Preview {
     MapView()
 }

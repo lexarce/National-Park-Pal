@@ -66,11 +66,13 @@ struct ParkDetailView: View {
                 VStack(spacing: 16) {
                     HStack(spacing: 20) {
                         NavigationLink(destination: ActivitiesView(park: park)) {
-                            ParkActionButton(icon: "triangle", text: "THINGS TO DO")
+                            ParkActionButton(icon: "mountain.2", text: "THINGS TO DO")
+                                .padding(.bottom, 5)
                         }
 
                         NavigationLink(destination: VisitorInfoView(park: park)) {
                             ParkActionButton(icon: "book", text: "VISITOR INFO")
+                                .padding(.bottom, 5)
                         }
                     }
 
