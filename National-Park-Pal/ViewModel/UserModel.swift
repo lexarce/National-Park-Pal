@@ -177,6 +177,7 @@ class UserModel: ObservableObject {
             "description": park.description ?? "",
             "latitude": park.latitude ?? "",
             "longitude": park.longitude ?? "",
+            "parkCode": park.parkCode ?? "",
             "activities": park.activities?.map { self.activityToDictionary($0) } ?? [],
             "addresses": park.addresses?.map { self.addressToDictionary($0) } ?? [],
             "images": park.images?.map { self.imageToDictionary($0) } ?? []

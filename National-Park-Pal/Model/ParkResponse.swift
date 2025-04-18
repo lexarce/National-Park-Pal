@@ -26,6 +26,7 @@ struct Park: Codable, Identifiable {
     
     let designation: String?
     let states: String?
+    let parkCode: String?
 }
 
 struct Activity: Codable {
