@@ -77,4 +77,30 @@ class ParkModel: ObservableObject {
             completion(combinedParks)
         }
     }
+    
+    // Search box function
+    func searchParks(query: String, completion: @escaping ([Park]) -> Void) {
+        let urlEncodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let urlString = "https://developer.nps.gov/api/v1/parks?q=\(urlEncodedQuery)&limit=50&api_key=\(NPS_API_KEY)"
+
+        guard let url = URL(string: urlString) else {
+            completion([])
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data,
+               let decoded = try? JSONDecoder().decode(NPSResponse.self, from: data) {
+                DispatchQueue.main.async {
+                    completion(decoded.data ?? [])
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion([])
+                }
+            }
+        }.resume()
+    }
 }
+
+

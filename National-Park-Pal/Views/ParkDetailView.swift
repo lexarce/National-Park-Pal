@@ -104,7 +104,6 @@ struct ParkDetailView: View {
                 Alert(title: Text(alertMessage))
             }
             .onAppear {
-                // Real-time sync: update UI from latest userModel
                 isSaved = userModel.user.savedParks.contains(where: { $0.fullName == park.fullName })
             }
         }
